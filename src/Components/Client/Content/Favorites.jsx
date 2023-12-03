@@ -26,6 +26,7 @@ import {
   Whatshot,
 } from "@mui/icons-material";
 import DetailRecipe from "./DetailRecipe";
+import CommentPage from "./Comment";
 const StyledRating = styled(Rating)(({ theme }) => ({
   "& .MuiRating-iconEmpty .MuiSvgIcon-root": {
     color: "#FFFFFF",
@@ -68,13 +69,37 @@ const Favorites = () => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const [favoriteLike, setFavoriteLike] = useState(true);
+
+  const [comment, setComment] = useState("");
+  const [comments, setComments] = useState([]);
+  const [isModalOpen, setModalOpen] = useState(false);
+
+  const handleCommentChange = (event) => {
+    setComment(event.target.value);
+  };
+
+  const handleOpenModal = () => {
+    setModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setModalOpen(false);
+  };
+
+  const handleAddComment = () => {
+    if (comment.trim() !== "") {
+      setComments([...comments, { comment }]);
+      setComment("");
+    }
+  };
+
   return (
     <Stack
       direction={"row"}
       alignItems={"flex-start"}
       justifyContent={"space-between"}
       gap={2}
-      sx={{ p: "0 3%" ,zIndex:1}}
+      sx={{ p: "0 3%", zIndex: 1 }}
     >
       <Stack sx={{ width: "80%" }}>
         <Stack
@@ -148,7 +173,7 @@ const Favorites = () => {
               Start Cooking
             </Button>
           </Stack>
-          <Stack alignItems={"flex-end"}>
+          <Stack alignItems={"flex-end"} gap={2}>
             <Stack direction={"row"} alignItems={"center"} gap={1}>
               <Stack alignItems={"center"}>
                 <IconButton onClick={() => setFavoriteLike(!favoriteLike)}>
@@ -161,19 +186,30 @@ const Favorites = () => {
                 <Typography fontSize={11}>12 Like</Typography>
               </Stack>
               <Stack alignItems={"center"}>
-                <IconButton>
+                <IconButton onClick={handleOpenModal}>
                   <Comment sx={{ color: "#99CB00", fontSize: 30 }} />
                 </IconButton>
                 <Typography fontSize={11}>12 Comment</Typography>
+                <Modal open={isModalOpen} onClose={handleCloseModal}>
+                  <CommentPage
+                    comments={comments}
+                    comment={comment}
+                    handleCommentChange={handleCommentChange}
+                    handleAddComment={handleAddComment}
+                  />
+                </Modal>
               </Stack>
             </Stack>
-            <StyledRating
-              name="highlight-selected-only"
-              defaultValue={1}
-              IconContainerComponent={IconContainer}
-              getLabelText={(value) => customIcons[value].label}
-              highlightSelectedOnly
-            />
+            <Stack alignItems={"center"} gap={0.5}>
+              <StyledRating
+                name="highlight-selected-only"
+                defaultValue={1}
+                IconContainerComponent={IconContainer}
+                getLabelText={(value) => customIcons[value].label}
+                highlightSelectedOnly
+              />
+              <Typography fontSize={11}>4 / 5 Review</Typography>
+            </Stack>
           </Stack>
         </Stack>
       </Stack>

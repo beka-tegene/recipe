@@ -53,7 +53,7 @@ const DetailRecipe = () => {
         </Stack>
         <Stack direction={"row"} alignItems={"center"} gap={1}>
           <Typography>
-            <b>Review : </b> 5
+            <b>Review : </b> 4 / 5
           </Typography>
           <Star sx={{ color: "gold", fontSize: 18 }} />
         </Stack>
