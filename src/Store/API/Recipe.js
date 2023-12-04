@@ -42,7 +42,7 @@ export const getRecipeById = async (data) => {
 
 export const updateRecipeById = async (data) => {
   //
-  const response = await axios.get(
+  const response = await axios.patch(
     `http://localhost:5000/api/v1/recipe/${data}`
   );
 
@@ -55,7 +55,7 @@ export const updateRecipeById = async (data) => {
 
 export const deleteRecipeById = async (data) => {
   //
-  const response = await axios.get(
+  const response = await axios.delete(
     `http://localhost:5000/api/v1/recipe/${data}`
   );
 
