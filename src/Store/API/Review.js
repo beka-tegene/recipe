@@ -1,9 +1,8 @@
 import axios from "axios";
 
-
-export const CreateRecipe = async (data) => {
+export const createReview = async (data) => {
   const useData = await axios.post(
-    "http://localhost:5000/api/v1/recipe/",
+    "http://localhost:5000/api/v1/review",
     data,
     {
       headers: {
@@ -15,25 +14,28 @@ export const CreateRecipe = async (data) => {
   return useData;
 };
 
-export const getAllRecipes = async (data) => {
-  //
-  const response = await axios.get(
-    `http://localhost:5000/api/v1/recipe`
-    );
 
-  if (response.status === 200) {
-    return response.data;
-  } else {
-    throw new Error("Failed to fetch recipes");
-  }
+export const getAllReviews = async (data) => {
+  const useData = await axios.get(
+    "http://localhost:5000/api/v1/review",
+    data,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }
+  );
+  console.log(useData);
+  return useData;
 };
 
 
 
-export const getRecipeById = async (data) => {
+
+export const getSingleReview = async (data) => {
   //
   const response = await axios.get(
-    `http://localhost:5000/api/v1/recipe/${data}`
+    `http://localhost:5000/api/v1/review/${data}`
   );
 
   if (response.status === 200) {
@@ -43,12 +45,10 @@ export const getRecipeById = async (data) => {
   }
 };
 
-
-
-export const updateRecipeById= async (data) => {
+export const updateReview = async (data) => {
   //
   const response = await axios.patch(
-    `http://localhost:5000/api/v1/recipe/${data}`
+    `http://localhost:5000/api/v1/review/${data}`
   );
 
   if (response.status === 200) {
@@ -58,11 +58,10 @@ export const updateRecipeById= async (data) => {
   }
 };
 
-
-export const deleteRecipeById = async (data) => {
+export const deleteReview = async (data) => {
   //
   const response = await axios.delete(
-    `http://localhost:5000/api/v1/recipe/${data}`
+    `http://localhost:5000/api/v1/review/${data}`
   );
 
   if (response.status === 200) {
