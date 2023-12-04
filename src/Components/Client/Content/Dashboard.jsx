@@ -27,9 +27,14 @@ import {
 import DetailRecipe from "./DetailRecipe";
 import CommentPage from "./Comment";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllRecipeData } from "../../../Store/Hook/RecipeHook";
+import {
+  getAllRecipeData,
+  setLikeRecipe,
+  setReviewRecipe,
+} from "../../../Store/Hook/RecipeHook";
 import { Link } from "react-router-dom";
-
+import Cookies from "js-cookie";
+import jwt_decode from "jwt-decode";
 const StyledRating = styled(Rating)(({ theme }) => ({
   "& .MuiRating-iconEmpty .MuiSvgIcon-root": {
     color: "#FFFFFF",
@@ -69,10 +74,12 @@ IconContainer.propTypes = {
 };
 
 const Dashboard = () => {
+  const token = Cookies.get("token");
+  const decodedToken = jwt_decode(token);
+  const userId = decodedToken.userId;
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const [favoriteLike, setFavoriteLike] = useState(false);
 
   const [comment, setComment] = useState("");
   const [comments, setComments] = useState([]);
@@ -80,6 +87,7 @@ const Dashboard = () => {
   const AllRecipeData = useSelector(
     (state) => state.RecipeHook.outputAllRecipe
   );
+
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(getAllRecipeData());
@@ -94,11 +102,14 @@ const Dashboard = () => {
     setSelectedItem(defaultRecipeFilter?.[0]);
     setSelectedCategory(defaultCategory);
   };
-
+  const [selectedItem, setSelectedItem] = useState();
+  const likeBoolean = selectedItem?.likes?.some(
+    (like) => like?.user === userId
+  );
   useEffect(() => {
     initializeData();
   }, [AllRecipeData]);
-  const [selectedItem, setSelectedItem] = useState();
+
   const [filterArray, setFilterArray] = useState();
   const FilterHandler = (category) => {
     const allRecipeFilter = AllRecipeData?.products?.filter(
@@ -130,6 +141,10 @@ const Dashboard = () => {
   };
   const handleItemClick = (item) => {
     setSelectedItem(item);
+  };
+
+  const likeHandler = (productId) => {
+    dispatch(setLikeRecipe({ data: { productId, userId } }));
   };
 
   return (
@@ -260,20 +275,24 @@ const Dashboard = () => {
           <Stack alignItems={"flex-end"} gap={2}>
             <Stack direction={"row"} alignItems={"center"} gap={1}>
               <Stack alignItems={"center"}>
-                <IconButton onClick={() => setFavoriteLike(!favoriteLike)}>
-                  {favoriteLike ? (
+                <IconButton onClick={() => likeHandler(selectedItem?._id)}>
+                  {likeBoolean ? (
                     <Favorite sx={{ color: "#99CB00", fontSize: 30 }} />
                   ) : (
                     <FavoriteBorder sx={{ color: "#99CB00", fontSize: 30 }} />
                   )}
                 </IconButton>
-                <Typography fontSize={11}>{selectedItem?.likes} Like</Typography>
+                <Typography fontSize={11}>
+                  {selectedItem?.likes?.length} Like
+                </Typography>
               </Stack>
               <Stack alignItems={"center"}>
                 <IconButton onClick={handleOpenModal}>
                   <Comment sx={{ color: "#99CB00", fontSize: 30 }} />
                 </IconButton>
-                <Typography fontSize={11}>12 Comment</Typography>
+                <Typography fontSize={11}>
+                  {selectedItem?.comments?.length} Comment
+                </Typography>
                 <Modal open={isModalOpen} onClose={handleCloseModal}>
                   <CommentPage
                     comments={comments}
@@ -326,6 +345,7 @@ const Dashboard = () => {
               cursor: "pointer",
             }}
             onClick={() => handleItemClick(item)}
+            key={index}
           >
             <Avatar
               src={item.image}
@@ -345,7 +365,7 @@ const Dashboard = () => {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <DetailRecipe />
+        <DetailRecipe selectedItem={selectedItem} />
       </Modal>
     </Stack>
   );

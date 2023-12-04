@@ -22,11 +22,26 @@ import DetailRecipe from "./DetailRecipe";
 import Cookies from "js-cookie";
 import jwt_decode from "jwt-decode";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllRecipeData } from "../../../Store/Hook/RecipeHook";
+import {
+  getAllRecipeData,
+  setDeleteRecipe,
+} from "../../../Store/Hook/RecipeHook";
+import EditPage from "./Edit";
 const MyPost = () => {
   const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(true);
+  const [selectedItem, setSelectedItem] = useState();
+  const handleOpen = (item) => {
+    setSelectedItem(item);
+    setOpen(true);
+  };
   const handleClose = () => setOpen(false);
+  const [dataEdit, setDataEdit] = useState();
+  const [open1, setOpen1] = useState(false);
+  const handleOpen1 = (item) => {
+    setDataEdit(item);
+    setOpen1(true);
+  };
+  const handleClose1 = () => setOpen1(false);
   const token = Cookies.get("token");
   const decodedToken = jwt_decode(token);
   const userId = decodedToken.userId;
@@ -40,6 +55,9 @@ const MyPost = () => {
   const allRecipeFilter = AllRecipeData?.products?.filter(
     (item) => item?.user === userId
   );
+  const DeleteHandler = (productId) => {
+    dispatch(setDeleteRecipe({ data: { productId } }));
+  };
   console.log(allRecipeFilter);
   return (
     <Box
@@ -79,22 +97,24 @@ const MyPost = () => {
                     <IconButton>
                       <Favorite sx={{ color: "#99CB00", fontSize: 30 }} />
                     </IconButton>
-                    <Typography fontSize={11}>{item.likes ? item.likes : 0} Like</Typography>
+                    <Typography fontSize={11}>
+                      {item?.likes?.length} Like
+                    </Typography>
                   </Stack>
                   <Stack alignItems={"center"}>
                     <IconButton>
                       <Comment sx={{ color: "#99CB00", fontSize: 30 }} />
                     </IconButton>
                     <Typography fontSize={11}>
-                      {item.comment ? item.comment.length : 0} Comment
+                      {item?.comments?.length} Comment
                     </Typography>
                   </Stack>
                 </Stack>
                 <Stack direction={"row"} justifyContent={"flex-end"} gap={2}>
-                  <IconButton>
+                  <IconButton onClick={() => handleOpen1(item)}>
                     <Edit sx={{ color: "#0000FF" }} />
                   </IconButton>
-                  <IconButton>
+                  <IconButton onClick={() => DeleteHandler(item._id)}>
                     <Delete sx={{ color: "#FF0000" }} />
                   </IconButton>
                 </Stack>
@@ -112,7 +132,7 @@ const MyPost = () => {
                     }}
                   >
                     <AccessTime />
-                    <Typography>{item.minute} min</Typography>
+                    <Typography>{item.minutes} min</Typography>
                   </Stack>
 
                   <Avatar
@@ -146,7 +166,7 @@ const MyPost = () => {
                     background: "#99CB00",
                     "&:hover": { background: "#99CB0090" },
                   }}
-                  onClick={handleOpen}
+                  onClick={() => handleOpen(item)}
                 >
                   Start Cooking
                 </Button>
@@ -181,7 +201,15 @@ const MyPost = () => {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <DetailRecipe />
+        <DetailRecipe selectedItem={selectedItem} />
+      </Modal>
+      <Modal
+        open={open1}
+        onClose={handleClose1}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <EditPage dataEdit={dataEdit} />
       </Modal>
     </Box>
   );

@@ -1,11 +1,5 @@
-import {
-  Avatar,
-  Box,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { Avatar, Box, Stack, Typography } from "@mui/material";
 import React from "react";
-import food from "../../../Image/Creamy-spinach-chicken-2fa1d5b.jpg";
 import { Star } from "@mui/icons-material";
 
 const style = {
@@ -24,38 +18,47 @@ const style = {
   justifyContent: "center",
   alignItems: "center",
 };
-const DetailRecipe = () => {
+const DetailRecipe = (props) => {
   return (
     <Box sx={style}>
-      <Avatar src={food} alt="food" sx={{ width: 150, height: 150 }} />
+      <Avatar
+        src={props.selectedItem?.image}
+        alt="food"
+        sx={{ width: 150, height: 150 }}
+      />
       <Stack>
         <Typography>
-          <b>Name : </b>Fall Spinach Salad
+          <b>Name : </b>
+          {props.selectedItem?.name}
         </Typography>
         <Typography>
-          <b>Category : </b> juice
+          <b>Category : </b> {props.selectedItem?.categories}
         </Typography>
         <Stack>
           <Typography fontWeight={"bold"}>Ingredient</Typography>
           <ul style={{ paddingLeft: 40 }}>
-            <li>food</li>
-            <li>food</li>
-            <li>food</li>
+            {props.selectedItem?.ingredients?.map((item, index) => (
+              <li key={index}>{item}</li>
+            ))}
           </ul>
         </Stack>
         <Stack direction={"row"} gap={3}>
           <Typography>
-            <b>minute : </b>15m
+            <b>minute : </b>
+            {props.selectedItem?.minutes} min
           </Typography>
           <Typography>
-            <b>Calory : </b>120cal
+            <b>Calory : </b>
+            {props.selectedItem?.cal} cal
           </Typography>
         </Stack>
         <Stack direction={"row"} alignItems={"center"} gap={1}>
           <Typography>
-            <b>Review : </b> 4 / 5
+            <b>Review : </b> {props.selectedItem?.averageRating} / 5
           </Typography>
-          <Star sx={{ color: "gold", fontSize: 18 }} />
+          {[...Array(props.selectedItem?.averageRating).keys()].map((num) => (
+            <Star sx={{ color: "gold", fontSize: 18 }} />
+          ))}
         </Stack>
       </Stack>
     </Box>

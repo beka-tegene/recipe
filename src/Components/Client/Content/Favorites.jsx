@@ -7,9 +7,7 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import React, { useState } from "react";
-import food from "../../../Image/Creamy-spinach-chicken-2fa1d5b.jpg";
-import food1 from "../../../Image/easy-dinner-recipes-f768402675e04452b1531360736da8b5.jpg";
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { styled } from "@mui/material/styles";
 import PropTypes from "prop-types";
@@ -27,6 +25,13 @@ import {
 } from "@mui/icons-material";
 import DetailRecipe from "./DetailRecipe";
 import CommentPage from "./Comment";
+import Cookies from "js-cookie";
+import jwt_decode from "jwt-decode";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  getAllRecipeData,
+  setLikeRecipe,
+} from "../../../Store/Hook/RecipeHook";
 const StyledRating = styled(Rating)(({ theme }) => ({
   "& .MuiRating-iconEmpty .MuiSvgIcon-root": {
     color: "#FFFFFF",
@@ -65,14 +70,38 @@ IconContainer.propTypes = {
   value: PropTypes.number.isRequired,
 };
 const Favorites = () => {
+  const token = Cookies.get("token");
+  const decodedToken = jwt_decode(token);
+  const userId = decodedToken.userId;
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const [favoriteLike, setFavoriteLike] = useState(true);
 
   const [comment, setComment] = useState("");
   const [comments, setComments] = useState([]);
   const [isModalOpen, setModalOpen] = useState(false);
+  const AllRecipeData = useSelector(
+    (state) => state.RecipeHook.outputAllRecipe
+  );
+  const [selectedItem, setSelectedItem] = useState();
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(getAllRecipeData());
+  }, [dispatch]);
+
+  const allRecipeFilter = AllRecipeData?.products?.filter((item) =>
+    item?.likes?.some((like) => like?.user === userId)
+  );
+  const likeBoolean = selectedItem?.likes?.some(
+    (like) => like?.user === userId
+  );
+  console.log(allRecipeFilter);
+  const initializeData = () => {
+    setSelectedItem(allRecipeFilter?.[0]);
+  };
+  useEffect(() => {
+    initializeData();
+  }, [AllRecipeData]);
 
   const handleCommentChange = (event) => {
     setComment(event.target.value);
@@ -91,6 +120,12 @@ const Favorites = () => {
       setComments([...comments, { comment }]);
       setComment("");
     }
+  };
+  const handleItemClick = (item) => {
+    setSelectedItem(item);
+  };
+  const likeHandler = (productId) => {
+    dispatch(setLikeRecipe({ data: { productId, userId } }));
   };
 
   return (
@@ -124,7 +159,7 @@ const Favorites = () => {
                 }}
               >
                 <AccessTime />
-                <Typography>15m</Typography>
+                <Typography>{selectedItem?.minutes} min</Typography>
               </Stack>
               <motion.div
                 animate={{ rotate: 360 }}
@@ -137,7 +172,7 @@ const Favorites = () => {
                 }}
               >
                 <Avatar
-                  src={food}
+                  src={selectedItem?.image}
                   alt="food"
                   sx={{
                     width: 280,
@@ -156,11 +191,11 @@ const Favorites = () => {
                 }}
               >
                 <Whatshot />
-                <Typography>120cal</Typography>
+                <Typography>{selectedItem?.cal} cal</Typography>
               </Stack>
             </Stack>
             <Typography fontSize={28} fontWeight={500}>
-              Fall Spinach Salad
+              {selectedItem?.name}
             </Typography>
             <Button
               variant="contained"
@@ -176,20 +211,24 @@ const Favorites = () => {
           <Stack alignItems={"flex-end"} gap={2}>
             <Stack direction={"row"} alignItems={"center"} gap={1}>
               <Stack alignItems={"center"}>
-                <IconButton onClick={() => setFavoriteLike(!favoriteLike)}>
-                  {favoriteLike ? (
+                <IconButton onClick={() => likeHandler(selectedItem?._id)}>
+                  {likeBoolean ? (
                     <Favorite sx={{ color: "#99CB00", fontSize: 30 }} />
                   ) : (
                     <FavoriteBorder sx={{ color: "#99CB00", fontSize: 30 }} />
                   )}
                 </IconButton>
-                <Typography fontSize={11}>12 Like</Typography>
+                <Typography fontSize={11}>
+                  {selectedItem?.likes?.length} Like
+                </Typography>
               </Stack>
               <Stack alignItems={"center"}>
                 <IconButton onClick={handleOpenModal}>
                   <Comment sx={{ color: "#99CB00", fontSize: 30 }} />
                 </IconButton>
-                <Typography fontSize={11}>12 Comment</Typography>
+                <Typography fontSize={11}>
+                  {selectedItem?.comments?.length} Comment
+                </Typography>
                 <Modal open={isModalOpen} onClose={handleCloseModal}>
                   <CommentPage
                     comments={comments}
@@ -203,12 +242,14 @@ const Favorites = () => {
             <Stack alignItems={"center"} gap={0.5}>
               <StyledRating
                 name="highlight-selected-only"
-                defaultValue={1}
+                defaultValue={selectedItem?.averageRating}
                 IconContainerComponent={IconContainer}
                 getLabelText={(value) => customIcons[value].label}
                 highlightSelectedOnly
               />
-              <Typography fontSize={11}>4 / 5 Review</Typography>
+              <Typography fontSize={11}>
+                {selectedItem?.averageRating} / 5 Review
+              </Typography>
             </Stack>
           </Stack>
         </Stack>
@@ -229,69 +270,31 @@ const Favorites = () => {
         }}
         gap={2}
       >
-        <Stack
-          alignItems={"center"}
-          gap={2}
-          sx={{
-            background: "#272727",
-            p: 1,
-            color: "#FFFFFF",
-            borderRadius: 3,
-            cursor: "pointer",
-          }}
-        >
-          <Avatar
-            src={food}
-            alt="food"
+        {allRecipeFilter?.map((item, index) => (
+          <Stack
+            alignItems={"center"}
+            gap={2}
             sx={{
-              width: 100,
-              height: 100,
+              background: "#272727",
+              p: 1,
+              color: "#FFFFFF",
+              borderRadius: 3,
+              cursor: "pointer",
             }}
-          />
-          <Typography fontSize={15}>Fall Spinach Salad</Typography>
-        </Stack>
-        <Stack
-          alignItems={"center"}
-          gap={2}
-          sx={{
-            background: "#444444",
-            p: 1,
-            color: "#FFFFFF",
-            borderRadius: 3,
-            cursor: "pointer",
-          }}
-        >
-          <Avatar
-            src={food1}
-            alt="food"
-            sx={{
-              width: 100,
-              height: 100,
-            }}
-          />
-          <Typography fontSize={15}>Fall Spinach Salad</Typography>
-        </Stack>
-        <Stack
-          alignItems={"center"}
-          gap={2}
-          sx={{
-            background: "#444444",
-            p: 1,
-            color: "#FFFFFF",
-            borderRadius: 3,
-            cursor: "pointer",
-          }}
-        >
-          <Avatar
-            src={food1}
-            alt="food"
-            sx={{
-              width: 100,
-              height: 100,
-            }}
-          />
-          <Typography fontSize={15}>Fall Spinach Salad</Typography>
-        </Stack>
+            onClick={() => handleItemClick(item)}
+            key={index}
+          >
+            <Avatar
+              src={item.image}
+              alt="food"
+              sx={{
+                width: 100,
+                height: 100,
+              }}
+            />
+            <Typography fontSize={15}>{item.name}</Typography>
+          </Stack>
+        ))}
       </Stack>
       <Modal
         open={open}
@@ -299,7 +302,7 @@ const Favorites = () => {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <DetailRecipe />
+        <DetailRecipe selectedItem={selectedItem} />
       </Modal>
     </Stack>
   );
