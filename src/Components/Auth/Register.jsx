@@ -13,9 +13,80 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import React from "react";
-
+import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import { Link } from "react-router-dom";
+import { setRegister } from "../../Store/Hook/AuthHook";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
 const Register = () => {
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [gender, setGender] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [errors, setErrors] = useState({
+    fullName: "",
+    email: "",
+    gender: "",
+    password: "",
+    confirmPassword: "",
+  });
+  const dispatch = useDispatch();
+  const validateForm = () => {
+    const newErrors = {};
+    let isValid = true;
+
+    if (!fullName) {
+      newErrors.fullName = "Full Name is required";
+      isValid = false;
+    }
+
+    if (!email) {
+      newErrors.email = "Email is required";
+      isValid = false;
+    }
+
+    if (!gender) {
+      newErrors.gender = "Gender is required";
+      isValid = false;
+    }
+
+    if (!password) {
+      newErrors.password = "Password is required";
+      isValid = false;
+    }
+
+    if (!confirmPassword) {
+      newErrors.confirmPassword = "Confirm Password is required";
+      isValid = false;
+    }
+
+    if (password !== confirmPassword) {
+      newErrors.confirmPassword = "Passwords do not match";
+      isValid = false;
+    }
+
+    setErrors(newErrors);
+    return isValid;
+  };
+  const submitHandler = async (e) => {
+    e.preventDefault();
+
+    if (validateForm()) {
+      await dispatch(
+        setRegister({ data: { full_name:fullName, email, gender, password } })
+      );
+      resetForm();
+    }
+  };
+
+  const resetForm = () => {
+    setEmail("");
+    setPassword("");
+    setConfirmPassword("");
+    setErrors({});
+  };
   return (
     <Stack
       sx={{
@@ -27,6 +98,7 @@ const Register = () => {
       justifyContent={"center"}
       alignItems={"center"}
     >
+      <ToastContainer />
       <Paper
         component={"form"}
         sx={{
@@ -38,6 +110,7 @@ const Register = () => {
           background: "#2C2C2C",
           color: "#ffffff",
         }}
+        onSubmit={submitHandler}
       >
         <Stack gap={1}>
           <Typography
@@ -68,6 +141,10 @@ const Register = () => {
               py: 1,
               color: "#FFFFFF",
             }}
+            value={fullName}
+            onChange={(e) => setFullName(e.target.value)}
+            error={!!errors.fullName}
+            helperText={errors.fullName}
           />
         </FormControl>
         <FormControl variant="standard" fullWidth>
@@ -86,6 +163,10 @@ const Register = () => {
               py: 1,
               color: "#FFFFFF",
             }}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            error={!!errors.email}
+            helperText={errors.email}
           />
         </FormControl>
         <FormControl>
@@ -99,6 +180,10 @@ const Register = () => {
             row
             aria-labelledby="demo-row-radio-buttons-group-label"
             name="row-radio-buttons-group"
+            value={gender}
+            onChange={(e) => setGender(e.target.value)}
+            error={!!errors.gender}
+            helperText={errors.gender}
           >
             <FormControlLabel
               value="female"
@@ -124,6 +209,10 @@ const Register = () => {
               py: 1,
               color: "#FFFFFF",
             }}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            error={!!errors.password}
+            helperText={errors.password}
           />
         </FormControl>
         <FormControl variant="standard" fullWidth>
@@ -142,14 +231,35 @@ const Register = () => {
               py: 1,
               color: "#FFFFFF",
             }}
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            error={!!errors.confirmPassword}
+            helperText={errors.confirmPassword}
           />
         </FormControl>
         <Button
           variant="contained"
           sx={{ background: "#99CB00", "&:hover": { background: "#99CB0090" } }}
+          type="submit"
         >
           Register
         </Button>
+        <Typography
+          sx={{
+            textAlign: "center",
+          }}
+        >
+          you already have an account?
+          <Link
+            style={{
+              textDecoration: "none",
+              color: "#99CB00",
+            }}
+            to={"/"}
+          >
+            Login
+          </Link>
+        </Typography>
       </Paper>
     </Stack>
   );

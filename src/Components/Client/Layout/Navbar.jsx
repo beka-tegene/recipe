@@ -13,6 +13,8 @@ import logo from "../../../Image/3d-avatar-profession-as-writer-3d-model-867496a
 import { ArrowDropDown, Search, Star } from "@mui/icons-material";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Cookies from "js-cookie";
+
 const Navbar = () => {
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
@@ -85,7 +87,15 @@ const Navbar = () => {
         }}
       >
         <MenuItem onClick={() => navigate("/my-profile")}>Profile</MenuItem>
-        <MenuItem onClick={() => navigate("/")}>Logout</MenuItem>
+        <MenuItem
+          onClick={() => {
+            localStorage.clear();
+            Cookies.remove("token");
+            window.location.href = "/";
+          }}
+        >
+          Logout
+        </MenuItem>
       </Menu>
     </Stack>
   );
