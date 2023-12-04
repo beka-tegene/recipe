@@ -5,7 +5,7 @@ const initialState = {
 };
 
 const RecipeHook = createSlice({
-  name: "auth",
+  name: "recipe",
   initialState: initialState,
   reducers: {
     setCreateRecipeData(state) {},

@@ -17,7 +17,8 @@ import {
 import { Add } from "@mui/icons-material";
 import { useDispatch } from "react-redux";
 import { setCreateRecipe } from "../../../Store/Hook/RecipeHook";
-
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
 const style = {
   position: "absolute",
   top: "50%",
@@ -37,8 +38,8 @@ const style = {
 
 const CreateRecipe = () => {
   const [ingredient, setIngredient] = useState("");
-  const [name, setName] = useState([]);
-  const [ingredients, setIngredientsList] = useState();
+  const [name, setName] = useState();
+  const [ingredients, setIngredientsList] = useState([]);
   const [preparationSteps, setPreparationSteps] = useState();
   const [categories, setCategories] = useState();
   const [minutes, setMinutes] = useState();
@@ -80,6 +81,7 @@ const CreateRecipe = () => {
       <Typography color={"#FFFFFF"} fontSize={28}>
         Create Recipe
       </Typography>
+      <ToastContainer />
       <Paper
         component={"form"}
         elevation={0}
