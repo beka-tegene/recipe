@@ -1,5 +1,6 @@
 import axios from "axios";
 
+
 export const CreateRecipe = async (data) => {
   console.log(data);
   const useData = await axios.post(
@@ -16,3 +17,6 @@ export const CreateRecipe = async (data) => {
     window.location.reload(true);
   }
 };
+
+
+
