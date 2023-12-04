@@ -78,13 +78,13 @@ const MyPost = () => {
         direction={"row"}
         alignItems={"center"}
         justifyContent={"flex-start"}
-        gap={3}
+        gap={2}
         flexWrap={"wrap"}
       >
         {allRecipeFilter?.length > 0 ? (
           allRecipeFilter?.map((item, index) => (
             <Stack
-              sx={{ border: "2px solid #CCCCCC", p: 2, borderRadius: 2 }}
+              sx={{ border: "2px solid #CCCCCC", p: 1, borderRadius: 2 }}
               key={index}
             >
               <Stack
