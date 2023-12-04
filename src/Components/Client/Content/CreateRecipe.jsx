@@ -11,9 +11,12 @@ import {
   Paper,
   Select,
   Stack,
+  TextField,
   Typography,
 } from "@mui/material";
 import { Add } from "@mui/icons-material";
+import { useDispatch } from "react-redux";
+import { setCreateRecipe } from "../../../Store/Hook/RecipeHook";
 
 const style = {
   position: "absolute",
@@ -34,21 +37,44 @@ const style = {
 
 const CreateRecipe = () => {
   const [ingredient, setIngredient] = useState("");
-  const [ingredientsList, setIngredientsList] = useState([]);
+  const [name, setName] = useState([]);
+  const [ingredients, setIngredientsList] = useState();
+  const [preparationSteps, setPreparationSteps] = useState();
+  const [categories, setCategories] = useState();
+  const [minutes, setMinutes] = useState();
+  const [cal, setCal] = useState();
+  const [image, setImage] = useState();
 
   const handleDelete = (index) => {
-    const updatedList = [...ingredientsList];
+    const updatedList = [...ingredients];
     updatedList.splice(index, 1);
     setIngredientsList(updatedList);
   };
 
   const handleAddIngredient = () => {
     if (ingredient.trim() !== "") {
-      setIngredientsList([...ingredientsList, ingredient]);
+      setIngredientsList([...ingredients, ingredient]);
       setIngredient("");
     }
   };
 
+  const handleImageChange = (e) => {
+    setImage(e.target.files[0]);
+  };
+  const dispatch = useDispatch();
+  const submitHandler = async (e) => {
+    e.preventDefault();
+    const formData = new FormData();
+    formData.append("name", name);
+    formData.append("ingredients", ingredients);
+    formData.append("preparationSteps", preparationSteps);
+    formData.append("categories", categories);
+    formData.append("minutes", minutes);
+    formData.append("cal", cal);
+    formData.append("image", image);
+
+    await dispatch(setCreateRecipe(formData));
+  };
   return (
     <Box sx={style}>
       <Typography color={"#FFFFFF"} fontSize={28}>
@@ -63,6 +89,7 @@ const CreateRecipe = () => {
           background: "transparent",
           color: "#FFFFFF",
         }}
+        onSubmit={submitHandler}
       >
         <Stack gap={2} flexGrow={1}>
           <InputBase
@@ -76,6 +103,7 @@ const CreateRecipe = () => {
             }}
             placeholder="Name Of Food"
             inputProps={{ "aria-label": "Name Of Food" }}
+            onChange={(e) => setName(e.target.value)}
           />
           <FormControl
             fullWidth
@@ -93,6 +121,7 @@ const CreateRecipe = () => {
               labelId="demo-select-small-label"
               id="demo-select-small"
               label="Category"
+              onChange={(e) => setCategories(e.target.value)}
             >
               <MenuItem value={"Appetizers"}>Appetizers</MenuItem>
               <MenuItem value={"Breakfast"}>Breakfast</MenuItem>
@@ -136,7 +165,7 @@ const CreateRecipe = () => {
             </IconButton>
           </Stack>
           <Stack direction="row" flexWrap="wrap" gap={1}>
-            {ingredientsList.map((item, index) => (
+            {ingredients?.map((item, index) => (
               <Chip
                 key={index}
                 label={item}
@@ -156,6 +185,7 @@ const CreateRecipe = () => {
             type="number"
             placeholder="Minute"
             inputProps={{ "aria-label": "Minute" }}
+            onChange={(e) => setMinutes(e.target.value)}
           />
           <InputBase
             sx={{
@@ -168,6 +198,16 @@ const CreateRecipe = () => {
             }}
             placeholder="Cal"
             inputProps={{ "aria-label": "Cal" }}
+            onChange={(e) => setCal(e.target.value)}
+          />
+          <TextField
+            label="Preparation Steps"
+            fullWidth
+            multiline
+            rows={1}
+            variant="outlined"
+            onChange={(e) => setPreparationSteps(e.target.value)}
+            mb={2}
           />
           <InputBase
             sx={{
@@ -181,6 +221,7 @@ const CreateRecipe = () => {
             type="file"
             placeholder="Image"
             inputProps={{ "aria-label": "Image" }}
+            onChange={handleImageChange}
           />
 
           <Stack direction={"row"} gap={2}>
