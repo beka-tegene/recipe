@@ -65,3 +65,21 @@ export const deleteRecipeById = async (data) => {
     throw new Error("Failed to fetch recipes by id");
   }
 };
+
+
+export const likeProduct = async (data) => {
+  console.log(data);
+  const useData = await axios.post(
+    `http://localhost:5000/api/v1/recipe/${data}/like`,
+    data,
+    {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+  console.log(useData);
+  if (useData.status === 200) {
+    window.location.reload(true);
+  }
+};
