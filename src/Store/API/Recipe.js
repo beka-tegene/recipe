@@ -12,7 +12,7 @@ export const CreateRecipe = async (data) => {
     }
   );
   console.log(useData);
-  if (useData.status === 200) {
+  if (useData.status === 201) {
     window.location.reload(true);
   }
 };
