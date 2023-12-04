@@ -14,6 +14,8 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import Cookies from "js-cookie";
+import jwt_decode from "jwt-decode";
 import { Add } from "@mui/icons-material";
 import { useDispatch } from "react-redux";
 import { setCreateRecipe } from "../../../Store/Hook/RecipeHook";
@@ -60,21 +62,38 @@ const CreateRecipe = () => {
   };
 
   const handleImageChange = (e) => {
-    setImage(e.target.files[0]);
+    const file = e.target.files[0];
+
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64String = reader.result;
+        setImage(base64String);
+      };
+      reader.readAsDataURL(file);
+    }
   };
   const dispatch = useDispatch();
+  const token = Cookies.get("token");
+  const decodedToken = jwt_decode(token);
+  const user = decodedToken.userId;
   const submitHandler = async (e) => {
     e.preventDefault();
-    const formData = new FormData();
-    formData.append("name", name);
-    formData.append("ingredients", ingredients);
-    formData.append("preparationSteps", preparationSteps);
-    formData.append("categories", categories);
-    formData.append("minutes", minutes);
-    formData.append("cal", cal);
-    formData.append("image", image);
 
-    await dispatch(setCreateRecipe(formData));
+    await dispatch(
+      setCreateRecipe({
+        data: {
+          name,
+          ingredients,
+          preparationSteps,
+          categories,
+          minutes,
+          cal,
+          image,
+          user,
+        },
+      })
+    );
   };
   return (
     <Box sx={style}>

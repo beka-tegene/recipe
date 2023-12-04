@@ -7,10 +7,8 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import logo from "../../../Image/cec979c2a0a9825815fcebf13addde20-removebg-preview.png";
-import food from "../../../Image/Creamy-spinach-chicken-2fa1d5b.jpg";
-import food1 from "../../../Image/easy-dinner-recipes-f768402675e04452b1531360736da8b5.jpg";
 import { motion } from "framer-motion";
 import { styled } from "@mui/material/styles";
 import PropTypes from "prop-types";
@@ -28,6 +26,9 @@ import {
 } from "@mui/icons-material";
 import DetailRecipe from "./DetailRecipe";
 import CommentPage from "./Comment";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllRecipeData } from "../../../Store/Hook/RecipeHook";
+import { Link } from "react-router-dom";
 
 const StyledRating = styled(Rating)(({ theme }) => ({
   "& .MuiRating-iconEmpty .MuiSvgIcon-root": {
@@ -76,6 +77,38 @@ const Dashboard = () => {
   const [comment, setComment] = useState("");
   const [comments, setComments] = useState([]);
   const [isModalOpen, setModalOpen] = useState(false);
+  const AllRecipeData = useSelector(
+    (state) => state.RecipeHook.outputAllRecipe
+  );
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(getAllRecipeData());
+  }, [dispatch]);
+  const [selectedCategory, setSelectedCategory] = useState("Appetizers");
+  const initializeData = () => {
+    const defaultCategory = "Appetizers";
+    const defaultRecipeFilter = AllRecipeData?.products?.filter(
+      (item) => item?.categories === defaultCategory
+    );
+    setFilterArray(defaultRecipeFilter);
+    setSelectedItem(defaultRecipeFilter?.[0]);
+    setSelectedCategory(defaultCategory);
+  };
+
+  useEffect(() => {
+    initializeData();
+  }, [AllRecipeData]);
+  const [selectedItem, setSelectedItem] = useState();
+  const [filterArray, setFilterArray] = useState();
+  const FilterHandler = (category) => {
+    const allRecipeFilter = AllRecipeData?.products?.filter(
+      (item) => item?.categories === category
+    );
+
+    setSelectedItem(allRecipeFilter?.[0]);
+    setFilterArray(allRecipeFilter);
+    setSelectedCategory(category);
+  };
 
   const handleCommentChange = (event) => {
     setComment(event.target.value);
@@ -94,6 +127,9 @@ const Dashboard = () => {
       setComments([...comments, { comment }]);
       setComment("");
     }
+  };
+  const handleItemClick = (item) => {
+    setSelectedItem(item);
   };
 
   return (
@@ -125,69 +161,29 @@ const Dashboard = () => {
             justifyContent={"space-around"}
             sx={{ width: "100%", px: 3 }}
           >
-            <Typography
-              color={"#FFFFFF"}
-              fontWeight={600}
-              sx={{ cursor: "pointer" }}
-            >
-              Appetizers
-            </Typography>
-            <Typography
-              color={"#7F7F7F"}
-              fontWeight={600}
-              sx={{ cursor: "pointer" }}
-            >
-              Breakfast
-            </Typography>
-            <Typography
-              color={"#7F7F7F"}
-              fontWeight={600}
-              sx={{ cursor: "pointer" }}
-            >
-              Lunch
-            </Typography>
-            <Typography
-              color={"#7F7F7F"}
-              fontWeight={600}
-              sx={{ cursor: "pointer" }}
-            >
-              Dinner
-            </Typography>
-            <Typography
-              color={"#7F7F7F"}
-              fontWeight={600}
-              sx={{ cursor: "pointer" }}
-            >
-              Desserts
-            </Typography>
-            <Typography
-              color={"#7F7F7F"}
-              fontWeight={600}
-              sx={{ cursor: "pointer" }}
-            >
-              Juice
-            </Typography>
-            <Typography
-              color={"#7F7F7F"}
-              fontWeight={600}
-              sx={{ cursor: "pointer" }}
-            >
-              Salads
-            </Typography>
-            <Typography
-              color={"#7F7F7F"}
-              fontWeight={600}
-              sx={{ cursor: "pointer" }}
-            >
-              Soups
-            </Typography>
-            <Typography
-              color={"#7F7F7F"}
-              fontWeight={600}
-              sx={{ cursor: "pointer" }}
-            >
-              Vegan
-            </Typography>
+            {[
+              "Appetizers",
+              "Breakfast",
+              "Lunch",
+              "Dinner",
+              "Desserts",
+              "Juice",
+              "Salads",
+              "Soups",
+              "Vegan",
+            ].map((category) => (
+              <Link
+                key={category}
+                style={{
+                  color: selectedCategory === category ? "#99CB00" : "#FFFFFF",
+                  fontWeight: 600,
+                  textDecoration: "none",
+                }}
+                onClick={() => FilterHandler(category)}
+              >
+                {category}
+              </Link>
+            ))}
           </Stack>
         </Stack>
         <Stack
@@ -212,7 +208,7 @@ const Dashboard = () => {
                 }}
               >
                 <AccessTime />
-                <Typography>15m</Typography>
+                <Typography>{selectedItem?.minutes} min</Typography>
               </Stack>
               <motion.div
                 animate={{ rotate: 360 }}
@@ -225,7 +221,7 @@ const Dashboard = () => {
                 }}
               >
                 <Avatar
-                  src={food}
+                  src={selectedItem?.image}
                   alt="food"
                   sx={{
                     width: 280,
@@ -244,11 +240,11 @@ const Dashboard = () => {
                 }}
               >
                 <Whatshot />
-                <Typography>120cal</Typography>
+                <Typography>{selectedItem?.cal} cal</Typography>
               </Stack>
             </Stack>
             <Typography fontSize={28} fontWeight={500}>
-              Fall Spinach Salad
+              {selectedItem?.name}
             </Typography>
             <Button
               variant="contained"
@@ -271,7 +267,7 @@ const Dashboard = () => {
                     <FavoriteBorder sx={{ color: "#99CB00", fontSize: 30 }} />
                   )}
                 </IconButton>
-                <Typography fontSize={11}>12 Like</Typography>
+                <Typography fontSize={11}>{selectedItem?.likes} Like</Typography>
               </Stack>
               <Stack alignItems={"center"}>
                 <IconButton onClick={handleOpenModal}>
@@ -291,18 +287,19 @@ const Dashboard = () => {
             <Stack alignItems={"center"} gap={0.5}>
               <StyledRating
                 name="highlight-selected-only"
-                defaultValue={1}
+                defaultValue={selectedItem?.averageRating}
                 IconContainerComponent={IconContainer}
                 getLabelText={(value) => customIcons[value].label}
                 highlightSelectedOnly
               />
-              <Typography fontSize={11}>4 / 5 Review</Typography>
+              <Typography fontSize={11}>
+                {selectedItem?.averageRating} / 5 Review
+              </Typography>
             </Stack>
           </Stack>
         </Stack>
       </Stack>
       <Stack
-        // flexGrow={0.25}
         sx={{
           background: "#222222",
           width: "14%",
@@ -317,69 +314,30 @@ const Dashboard = () => {
         }}
         gap={2}
       >
-        <Stack
-          alignItems={"center"}
-          gap={2}
-          sx={{
-            background: "#272727",
-            p: 1,
-            color: "#FFFFFF",
-            borderRadius: 3,
-            cursor: "pointer",
-          }}
-        >
-          <Avatar
-            src={food}
-            alt="food"
+        {filterArray?.map((item, index) => (
+          <Stack
+            alignItems={"center"}
+            gap={2}
             sx={{
-              width: 100,
-              height: 100,
+              background: "#272727",
+              p: 1,
+              color: "#FFFFFF",
+              borderRadius: 3,
+              cursor: "pointer",
             }}
-          />
-          <Typography fontSize={15}>Fall Spinach Salad</Typography>
-        </Stack>
-        <Stack
-          alignItems={"center"}
-          gap={2}
-          sx={{
-            background: "#444444",
-            p: 1,
-            color: "#FFFFFF",
-            borderRadius: 3,
-            cursor: "pointer",
-          }}
-        >
-          <Avatar
-            src={food1}
-            alt="food"
-            sx={{
-              width: 100,
-              height: 100,
-            }}
-          />
-          <Typography fontSize={15}>Fall Spinach Salad</Typography>
-        </Stack>
-        <Stack
-          alignItems={"center"}
-          gap={2}
-          sx={{
-            background: "#444444",
-            p: 1,
-            color: "#FFFFFF",
-            borderRadius: 3,
-            cursor: "pointer",
-          }}
-        >
-          <Avatar
-            src={food1}
-            alt="food"
-            sx={{
-              width: 100,
-              height: 100,
-            }}
-          />
-          <Typography fontSize={15}>Fall Spinach Salad</Typography>
-        </Stack>
+            onClick={() => handleItemClick(item)}
+          >
+            <Avatar
+              src={item.image}
+              alt="food"
+              sx={{
+                width: 100,
+                height: 100,
+              }}
+            />
+            <Typography fontSize={15}>{item.name}</Typography>
+          </Stack>
+        ))}
       </Stack>
       <Modal
         open={open}
