@@ -10,7 +10,8 @@ import {
   Typography,
 } from "@mui/material";
 import React from "react";
-
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
 const Login = () => {
   return (
     <Stack
@@ -23,6 +24,7 @@ const Login = () => {
       justifyContent={"center"}
       alignItems={"center"}
     >
+      <ToastContainer />
       <Paper
         component={"form"}
         sx={{
