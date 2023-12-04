@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   InputCreateRecipe: [],
+  outputAllRecipe: [],
 };
 
 const RecipeHook = createSlice({
@@ -20,9 +21,20 @@ const RecipeHook = createSlice({
         cal: newData.cal,
       });
     },
+    getAllRecipeData(state) {
+      state.outputAllRecipe = [];
+    },
+    getAllRecipe(state, action) {
+      state.outputAllRecipe = action.payload;
+    },
   },
 });
 
-export const { setCreateRecipeData, setCreateRecipe } = RecipeHook.actions;
+export const {
+  setCreateRecipeData,
+  setCreateRecipe,
+  getAllRecipeData,
+  getAllRecipe,
+} = RecipeHook.actions;
 
 export default RecipeHook.reducer;

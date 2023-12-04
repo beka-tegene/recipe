@@ -7,8 +7,8 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import React from "react";
-import food from "../../../Image/Creamy-spinach-chicken-2fa1d5b.jpg";
+import React, { useEffect } from "react";
+import logo from "../../../Image/cec979c2a0a9825815fcebf13addde20-removebg-preview.png";
 import {
   AccessTime,
   Comment,
@@ -19,11 +19,28 @@ import {
 } from "@mui/icons-material";
 import { useState } from "react";
 import DetailRecipe from "./DetailRecipe";
-
+import Cookies from "js-cookie";
+import jwt_decode from "jwt-decode";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllRecipeData } from "../../../Store/Hook/RecipeHook";
 const MyPost = () => {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const token = Cookies.get("token");
+  const decodedToken = jwt_decode(token);
+  const userId = decodedToken.userId;
+  const AllRecipeData = useSelector(
+    (state) => state.RecipeHook.outputAllRecipe
+  );
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(getAllRecipeData());
+  }, [dispatch]);
+  const allRecipeFilter = AllRecipeData?.products?.filter(
+    (item) => item?.user === userId
+  );
+  console.log(allRecipeFilter);
   return (
     <Box
       sx={{
@@ -46,580 +63,117 @@ const MyPost = () => {
         gap={3}
         flexWrap={"wrap"}
       >
-        <Stack sx={{ border: "2px solid #CCCCCC", p: 2, borderRadius: 2 }}>
-          <Stack
-            direction={"row"}
-            alignItems={"center"}
-            justifyContent={"space-between"}
-          >
-            <Stack direction={"row"} alignItems={"center"} gap={1}>
-              <Stack alignItems={"center"}>
-                <IconButton>
-                  <Favorite sx={{ color: "#99CB00", fontSize: 30 }} />
-                </IconButton>
-                <Typography fontSize={11}>12 Like</Typography>
-              </Stack>
-              <Stack alignItems={"center"}>
-                <IconButton>
-                  <Comment sx={{ color: "#99CB00", fontSize: 30 }} />
-                </IconButton>
-                <Typography fontSize={11}>12 Comment</Typography>
-              </Stack>
-            </Stack>
-            <Stack direction={"row"} justifyContent={"flex-end"} gap={2}>
-              <IconButton>
-                <Edit sx={{ color: "#0000FF" }} />
-              </IconButton>
-              <IconButton>
-                <Delete sx={{ color: "#FF0000" }} />
-              </IconButton>
-            </Stack>
-          </Stack>
-          <Stack alignItems={"center"} gap={1}>
-            <Stack direction={"row"} alignItems={"flex-end"} gap={2}>
-              <Stack
-                alignItems={"center"}
-                direction={"row"}
-                sx={{
-                  background: "#222222",
-                  p: 1,
-                  color: "#FFFFFF",
-                  borderRadius: 5,
-                }}
-              >
-                <AccessTime />
-                <Typography>15m</Typography>
-              </Stack>
-
-              <Avatar
-                src={food}
-                alt="food"
-                sx={{
-                  width: 180,
-                  height: 180,
-                }}
-              />
-              <Stack
-                alignItems={"center"}
-                direction={"row"}
-                sx={{
-                  background: "#222222",
-                  p: 1,
-                  color: "#FFFFFF",
-                  borderRadius: 5,
-                }}
-              >
-                <Whatshot />
-                <Typography>120cal</Typography>
-              </Stack>
-            </Stack>
-            <Typography fontSize={28} fontWeight={500}>
-              Fall Spinach Salad
-            </Typography>
-            <Button
-              variant="contained"
-              sx={{
-                background: "#99CB00",
-                "&:hover": { background: "#99CB0090" },
-              }}
-              onClick={handleOpen}
+        {allRecipeFilter?.length > 0 ? (
+          allRecipeFilter?.map((item, index) => (
+            <Stack
+              sx={{ border: "2px solid #CCCCCC", p: 2, borderRadius: 2 }}
+              key={index}
             >
-              Start Cooking
-            </Button>
-          </Stack>
-        </Stack>
-        <Stack sx={{ border: "2px solid #CCCCCC", p: 2, borderRadius: 2 }}>
-          <Stack
-            direction={"row"}
-            alignItems={"center"}
-            justifyContent={"space-between"}
-          >
-            <Stack direction={"row"} alignItems={"center"} gap={1}>
-              <Stack alignItems={"center"}>
-                <IconButton>
-                  <Favorite sx={{ color: "#99CB00", fontSize: 30 }} />
-                </IconButton>
-                <Typography fontSize={11}>12 Like</Typography>
-              </Stack>
-              <Stack alignItems={"center"}>
-                <IconButton>
-                  <Comment sx={{ color: "#99CB00", fontSize: 30 }} />
-                </IconButton>
-                <Typography fontSize={11}>12 Comment</Typography>
-              </Stack>
-            </Stack>
-            <Stack direction={"row"} justifyContent={"flex-end"} gap={2}>
-              <IconButton>
-                <Edit sx={{ color: "#0000FF" }} />
-              </IconButton>
-              <IconButton>
-                <Delete sx={{ color: "#FF0000" }} />
-              </IconButton>
-            </Stack>
-          </Stack>
-          <Stack alignItems={"center"} gap={1}>
-            <Stack direction={"row"} alignItems={"flex-end"} gap={2}>
               <Stack
-                alignItems={"center"}
                 direction={"row"}
-                sx={{
-                  background: "#222222",
-                  p: 1,
-                  color: "#FFFFFF",
-                  borderRadius: 5,
-                }}
+                alignItems={"center"}
+                justifyContent={"space-between"}
               >
-                <AccessTime />
-                <Typography>15m</Typography>
+                <Stack direction={"row"} alignItems={"center"} gap={1}>
+                  <Stack alignItems={"center"}>
+                    <IconButton>
+                      <Favorite sx={{ color: "#99CB00", fontSize: 30 }} />
+                    </IconButton>
+                    <Typography fontSize={11}>{item.likes ? item.likes : 0} Like</Typography>
+                  </Stack>
+                  <Stack alignItems={"center"}>
+                    <IconButton>
+                      <Comment sx={{ color: "#99CB00", fontSize: 30 }} />
+                    </IconButton>
+                    <Typography fontSize={11}>
+                      {item.comment ? item.comment.length : 0} Comment
+                    </Typography>
+                  </Stack>
+                </Stack>
+                <Stack direction={"row"} justifyContent={"flex-end"} gap={2}>
+                  <IconButton>
+                    <Edit sx={{ color: "#0000FF" }} />
+                  </IconButton>
+                  <IconButton>
+                    <Delete sx={{ color: "#FF0000" }} />
+                  </IconButton>
+                </Stack>
               </Stack>
+              <Stack alignItems={"center"} gap={1}>
+                <Stack direction={"row"} alignItems={"flex-end"} gap={2}>
+                  <Stack
+                    alignItems={"center"}
+                    direction={"row"}
+                    sx={{
+                      background: "#222222",
+                      p: 1,
+                      color: "#FFFFFF",
+                      borderRadius: 5,
+                    }}
+                  >
+                    <AccessTime />
+                    <Typography>{item.minute} min</Typography>
+                  </Stack>
 
-              <Avatar
-                src={food}
-                alt="food"
-                sx={{
-                  width: 180,
-                  height: 180,
-                }}
-              />
-              <Stack
-                alignItems={"center"}
-                direction={"row"}
-                sx={{
-                  background: "#222222",
-                  p: 1,
-                  color: "#FFFFFF",
-                  borderRadius: 5,
-                }}
-              >
-                <Whatshot />
-                <Typography>120cal</Typography>
+                  <Avatar
+                    src={item.image}
+                    alt="food"
+                    sx={{
+                      width: 180,
+                      height: 180,
+                    }}
+                  />
+                  <Stack
+                    alignItems={"center"}
+                    direction={"row"}
+                    sx={{
+                      background: "#222222",
+                      p: 1,
+                      color: "#FFFFFF",
+                      borderRadius: 5,
+                    }}
+                  >
+                    <Whatshot />
+                    <Typography>{item.cal} cal</Typography>
+                  </Stack>
+                </Stack>
+                <Typography fontSize={28} fontWeight={500}>
+                  {item.name}
+                </Typography>
+                <Button
+                  variant="contained"
+                  sx={{
+                    background: "#99CB00",
+                    "&:hover": { background: "#99CB0090" },
+                  }}
+                  onClick={handleOpen}
+                >
+                  Start Cooking
+                </Button>
               </Stack>
             </Stack>
-            <Typography fontSize={28} fontWeight={500}>
-              Fall Spinach Salad
-            </Typography>
-            <Button
-              variant="contained"
-              sx={{
-                background: "#99CB00",
-                "&:hover": { background: "#99CB0090" },
-              }}
-              onClick={handleOpen}
-            >
-              Start Cooking
-            </Button>
-          </Stack>
-        </Stack>
-        <Stack sx={{ border: "2px solid #CCCCCC", p: 2, borderRadius: 2 }}>
+          ))
+        ) : (
           <Stack
-            direction={"row"}
             alignItems={"center"}
-            justifyContent={"space-between"}
+            justifyContent={"center"}
+            sx={{ width: "100%", height: "100%" }}
+            gap={5}
           >
-            <Stack direction={"row"} alignItems={"center"} gap={1}>
-              <Stack alignItems={"center"}>
-                <IconButton>
-                  <Favorite sx={{ color: "#99CB00", fontSize: 30 }} />
-                </IconButton>
-                <Typography fontSize={11}>12 Like</Typography>
-              </Stack>
-              <Stack alignItems={"center"}>
-                <IconButton>
-                  <Comment sx={{ color: "#99CB00", fontSize: 30 }} />
-                </IconButton>
-                <Typography fontSize={11}>12 Comment</Typography>
-              </Stack>
-            </Stack>
-            <Stack direction={"row"} justifyContent={"flex-end"} gap={2}>
-              <IconButton>
-                <Edit sx={{ color: "#0000FF" }} />
-              </IconButton>
-              <IconButton>
-                <Delete sx={{ color: "#FF0000" }} />
-              </IconButton>
-            </Stack>
-          </Stack>
-          <Stack alignItems={"center"} gap={1}>
-            <Stack direction={"row"} alignItems={"flex-end"} gap={2}>
-              <Stack
-                alignItems={"center"}
-                direction={"row"}
-                sx={{
-                  background: "#222222",
-                  p: 1,
-                  color: "#FFFFFF",
-                  borderRadius: 5,
-                }}
-              >
-                <AccessTime />
-                <Typography>15m</Typography>
-              </Stack>
-
-              <Avatar
-                src={food}
-                alt="food"
-                sx={{
-                  width: 180,
-                  height: 180,
-                }}
-              />
-              <Stack
-                alignItems={"center"}
-                direction={"row"}
-                sx={{
-                  background: "#222222",
-                  p: 1,
-                  color: "#FFFFFF",
-                  borderRadius: 5,
-                }}
-              >
-                <Whatshot />
-                <Typography>120cal</Typography>
-              </Stack>
-            </Stack>
-            <Typography fontSize={28} fontWeight={500}>
-              Fall Spinach Salad
-            </Typography>
-            <Button
-              variant="contained"
+            <Avatar
+              src={logo}
+              alt="logo"
               sx={{
-                background: "#99CB00",
-                "&:hover": { background: "#99CB0090" },
+                borderBottom: "#FFFFFF 2px solid",
+                width: 150,
+                height: 150,
               }}
-              onClick={handleOpen}
-            >
-              Start Cooking
-            </Button>
-          </Stack>
-        </Stack>
-        <Stack sx={{ border: "2px solid #CCCCCC", p: 2, borderRadius: 2 }}>
-          <Stack
-            direction={"row"}
-            alignItems={"center"}
-            justifyContent={"space-between"}
-          >
-            <Stack direction={"row"} alignItems={"center"} gap={1}>
-              <Stack alignItems={"center"}>
-                <IconButton>
-                  <Favorite sx={{ color: "#99CB00", fontSize: 30 }} />
-                </IconButton>
-                <Typography fontSize={11}>12 Like</Typography>
-              </Stack>
-              <Stack alignItems={"center"}>
-                <IconButton>
-                  <Comment sx={{ color: "#99CB00", fontSize: 30 }} />
-                </IconButton>
-                <Typography fontSize={11}>12 Comment</Typography>
-              </Stack>
-            </Stack>
-            <Stack direction={"row"} justifyContent={"flex-end"} gap={2}>
-              <IconButton>
-                <Edit sx={{ color: "#0000FF" }} />
-              </IconButton>
-              <IconButton>
-                <Delete sx={{ color: "#FF0000" }} />
-              </IconButton>
-            </Stack>
-          </Stack>
-          <Stack alignItems={"center"} gap={1}>
-            <Stack direction={"row"} alignItems={"flex-end"} gap={2}>
-              <Stack
-                alignItems={"center"}
-                direction={"row"}
-                sx={{
-                  background: "#222222",
-                  p: 1,
-                  color: "#FFFFFF",
-                  borderRadius: 5,
-                }}
-              >
-                <AccessTime />
-                <Typography>15m</Typography>
-              </Stack>
-
-              <Avatar
-                src={food}
-                alt="food"
-                sx={{
-                  width: 180,
-                  height: 180,
-                }}
-              />
-              <Stack
-                alignItems={"center"}
-                direction={"row"}
-                sx={{
-                  background: "#222222",
-                  p: 1,
-                  color: "#FFFFFF",
-                  borderRadius: 5,
-                }}
-              >
-                <Whatshot />
-                <Typography>120cal</Typography>
-              </Stack>
-            </Stack>
-            <Typography fontSize={28} fontWeight={500}>
-              Fall Spinach Salad
+            />
+            <Typography fontSize={24}>
+              There no post if you want to post click add icon
             </Typography>
-            <Button
-              variant="contained"
-              sx={{
-                background: "#99CB00",
-                "&:hover": { background: "#99CB0090" },
-              }}
-              onClick={handleOpen}
-            >
-              Start Cooking
-            </Button>
           </Stack>
-        </Stack>
-        <Stack sx={{ border: "2px solid #CCCCCC", p: 2, borderRadius: 2 }}>
-          <Stack
-            direction={"row"}
-            alignItems={"center"}
-            justifyContent={"space-between"}
-          >
-            <Stack direction={"row"} alignItems={"center"} gap={1}>
-              <Stack alignItems={"center"}>
-                <IconButton>
-                  <Favorite sx={{ color: "#99CB00", fontSize: 30 }} />
-                </IconButton>
-                <Typography fontSize={11}>12 Like</Typography>
-              </Stack>
-              <Stack alignItems={"center"}>
-                <IconButton>
-                  <Comment sx={{ color: "#99CB00", fontSize: 30 }} />
-                </IconButton>
-                <Typography fontSize={11}>12 Comment</Typography>
-              </Stack>
-            </Stack>
-            <Stack direction={"row"} justifyContent={"flex-end"} gap={2}>
-              <IconButton>
-                <Edit sx={{ color: "#0000FF" }} />
-              </IconButton>
-              <IconButton>
-                <Delete sx={{ color: "#FF0000" }} />
-              </IconButton>
-            </Stack>
-          </Stack>
-          <Stack alignItems={"center"} gap={1}>
-            <Stack direction={"row"} alignItems={"flex-end"} gap={2}>
-              <Stack
-                alignItems={"center"}
-                direction={"row"}
-                sx={{
-                  background: "#222222",
-                  p: 1,
-                  color: "#FFFFFF",
-                  borderRadius: 5,
-                }}
-              >
-                <AccessTime />
-                <Typography>15m</Typography>
-              </Stack>
-
-              <Avatar
-                src={food}
-                alt="food"
-                sx={{
-                  width: 180,
-                  height: 180,
-                }}
-              />
-              <Stack
-                alignItems={"center"}
-                direction={"row"}
-                sx={{
-                  background: "#222222",
-                  p: 1,
-                  color: "#FFFFFF",
-                  borderRadius: 5,
-                }}
-              >
-                <Whatshot />
-                <Typography>120cal</Typography>
-              </Stack>
-            </Stack>
-            <Typography fontSize={28} fontWeight={500}>
-              Fall Spinach Salad
-            </Typography>
-            <Button
-              variant="contained"
-              sx={{
-                background: "#99CB00",
-                "&:hover": { background: "#99CB0090" },
-              }}
-              onClick={handleOpen}
-            >
-              Start Cooking
-            </Button>
-          </Stack>
-        </Stack>
-        <Stack sx={{ border: "2px solid #CCCCCC", p: 2, borderRadius: 2 }}>
-          <Stack
-            direction={"row"}
-            alignItems={"center"}
-            justifyContent={"space-between"}
-          >
-            <Stack direction={"row"} alignItems={"center"} gap={1}>
-              <Stack alignItems={"center"}>
-                <IconButton>
-                  <Favorite sx={{ color: "#99CB00", fontSize: 30 }} />
-                </IconButton>
-                <Typography fontSize={11}>12 Like</Typography>
-              </Stack>
-              <Stack alignItems={"center"}>
-                <IconButton>
-                  <Comment sx={{ color: "#99CB00", fontSize: 30 }} />
-                </IconButton>
-                <Typography fontSize={11}>12 Comment</Typography>
-              </Stack>
-            </Stack>
-            <Stack direction={"row"} justifyContent={"flex-end"} gap={2}>
-              <IconButton>
-                <Edit sx={{ color: "#0000FF" }} />
-              </IconButton>
-              <IconButton>
-                <Delete sx={{ color: "#FF0000" }} />
-              </IconButton>
-            </Stack>
-          </Stack>
-          <Stack alignItems={"center"} gap={1}>
-            <Stack direction={"row"} alignItems={"flex-end"} gap={2}>
-              <Stack
-                alignItems={"center"}
-                direction={"row"}
-                sx={{
-                  background: "#222222",
-                  p: 1,
-                  color: "#FFFFFF",
-                  borderRadius: 5,
-                }}
-              >
-                <AccessTime />
-                <Typography>15m</Typography>
-              </Stack>
-
-              <Avatar
-                src={food}
-                alt="food"
-                sx={{
-                  width: 180,
-                  height: 180,
-                }}
-              />
-              <Stack
-                alignItems={"center"}
-                direction={"row"}
-                sx={{
-                  background: "#222222",
-                  p: 1,
-                  color: "#FFFFFF",
-                  borderRadius: 5,
-                }}
-              >
-                <Whatshot />
-                <Typography>120cal</Typography>
-              </Stack>
-            </Stack>
-            <Typography fontSize={28} fontWeight={500}>
-              Fall Spinach Salad
-            </Typography>
-            <Button
-              variant="contained"
-              sx={{
-                background: "#99CB00",
-                "&:hover": { background: "#99CB0090" },
-              }}
-              onClick={handleOpen}
-            >
-              Start Cooking
-            </Button>
-          </Stack>
-        </Stack>
-        <Stack sx={{ border: "2px solid #CCCCCC", p: 2, borderRadius: 2 }}>
-          <Stack
-            direction={"row"}
-            alignItems={"center"}
-            justifyContent={"space-between"}
-          >
-            <Stack direction={"row"} alignItems={"center"} gap={1}>
-              <Stack alignItems={"center"}>
-                <IconButton>
-                  <Favorite sx={{ color: "#99CB00", fontSize: 30 }} />
-                </IconButton>
-                <Typography fontSize={11}>12 Like</Typography>
-              </Stack>
-              <Stack alignItems={"center"}>
-                <IconButton>
-                  <Comment sx={{ color: "#99CB00", fontSize: 30 }} />
-                </IconButton>
-                <Typography fontSize={11}>12 Comment</Typography>
-              </Stack>
-            </Stack>
-            <Stack direction={"row"} justifyContent={"flex-end"} gap={2}>
-              <IconButton>
-                <Edit sx={{ color: "#0000FF" }} />
-              </IconButton>
-              <IconButton>
-                <Delete sx={{ color: "#FF0000" }} />
-              </IconButton>
-            </Stack>
-          </Stack>
-          <Stack alignItems={"center"} gap={1}>
-            <Stack direction={"row"} alignItems={"flex-end"} gap={2}>
-              <Stack
-                alignItems={"center"}
-                direction={"row"}
-                sx={{
-                  background: "#222222",
-                  p: 1,
-                  color: "#FFFFFF",
-                  borderRadius: 5,
-                }}
-              >
-                <AccessTime />
-                <Typography>15m</Typography>
-              </Stack>
-
-              <Avatar
-                src={food}
-                alt="food"
-                sx={{
-                  width: 180,
-                  height: 180,
-                }}
-              />
-              <Stack
-                alignItems={"center"}
-                direction={"row"}
-                sx={{
-                  background: "#222222",
-                  p: 1,
-                  color: "#FFFFFF",
-                  borderRadius: 5,
-                }}
-              >
-                <Whatshot />
-                <Typography>120cal</Typography>
-              </Stack>
-            </Stack>
-            <Typography fontSize={28} fontWeight={500}>
-              Fall Spinach Salad
-            </Typography>
-            <Button
-              variant="contained"
-              sx={{
-                background: "#99CB00",
-                "&:hover": { background: "#99CB0090" },
-              }}
-              onClick={handleOpen}
-            >
-              Start Cooking
-            </Button>
-          </Stack>
-        </Stack>
+        )}
       </Stack>
       <Modal
         open={open}

@@ -3,11 +3,11 @@ import axios from "axios";
 export const CreateRecipe = async (data) => {
   console.log(data);
   const useData = await axios.post(
-    "http://localhost:5000/api/v1/recipe/createRecipe",
+    "http://localhost:5000/api/v1/recipe/",
     data,
     {
       headers: {
-        "Content-Type": "multipart/form-data",
+        "Content-Type": "application/json",
       },
     }
   );
@@ -18,7 +18,6 @@ export const CreateRecipe = async (data) => {
 };
 
 export const getAllRecipes = async (data) => {
-  //
   const response = await axios.get(`http://localhost:5000/api/v1/recipe`);
 
   if (response.status === 200) {
