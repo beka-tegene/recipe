@@ -13,7 +13,7 @@ export const SignUp = async (data) => {
   );
   console.log(useData);
   if (useData.status === 201) {
-    window.location.href = "/login";
+    window.location.href = "/";
   } else {
     window.location.href = "/register";
   }
@@ -41,13 +41,12 @@ export const Login = async (data) => {
       if (role === "user") {
         window.location.href = "/dashboard";
       } else {
-        window.location.href = "/login";
+        window.location.href = "/";
       }
     }
   } catch (error) {
     toast.error(error.response.data.msg);
     toast.error(error.response.data.error);
-    console.error("Login Error:", error);
   }
 };
 

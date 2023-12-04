@@ -1,7 +1,7 @@
 import { call, takeLatest } from "redux-saga/effects";
 import { toast } from "react-toastify";
-import { Login, SignUp } from "../API/AuthApi";
-import { setLoginData, setRegisterData } from "../Store/AuthStore";
+import { Login, SignUp } from "../API/Auth";
+import { setLoginData, setRegisterData } from "../Hook/AuthHook";
 
 export function* watchRecipe() {
   yield takeLatest("auth/setRegister", fetchSetRegister);
@@ -12,7 +12,7 @@ export function* watchRecipe() {
 
 function* fetchSetRegister(action) {
   try {
-    yield call(SignUp, action.payload);
+    yield call(SignUp, action.payload.data);
     yield setRegisterData();
   } catch (error) {
     toast.error(error.response.data.msg);
@@ -21,7 +21,7 @@ function* fetchSetRegister(action) {
 
 function* fetchSetLogin(action) {
   try {
-    yield call(Login, action.payload);
+    yield call(Login, action.payload.data);
     yield setLoginData();
   } catch (error) {
     toast.error(error.response.data.msg);
