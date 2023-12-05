@@ -35,7 +35,7 @@ const Navbar = () => {
       <Paper
         sx={{
           background: "#22222250",
-          p: 2,
+          p: { xs: 1, sm: 2 },
           color: "#FFFFFF",
           borderRadius: 3,
           display: "flex",
@@ -46,22 +46,31 @@ const Navbar = () => {
       >
         <Star sx={{ color: "#9ECB00" }} />
         <Stack direction={"row"} gap={1}>
-          <Typography fontSize={30}>40</Typography>
+          <Typography fontSize={{ xs: 18, sm: 20, md: 20, lg: 30, xl: 30 }}>
+            40
+          </Typography>
           <Divider sx={{ background: "#FFFFFF", width: "1px" }} />
-          <Typography fontSize={14}>
+          <Typography fontSize={{ xs: 11, sm: 14 }}>
             Health <br /> score
           </Typography>
         </Stack>
       </Paper>
       <Stack>
-        <Typography fontSize={50} textAlign={"center"} color={"#222222"}>
+        <Typography
+          fontSize={{ xs: 20, sm: 30, md: 40, lg: 50, xl: 50 }}
+          textAlign={"center"}
+          color={"#222222"}
+        >
           Our best healthy
         </Typography>
-        <Typography fontSize={50} textAlign={"center"}>
+        <Typography
+          fontSize={{ xs: 20, sm: 30, md: 40, lg: 50, xl: 50 }}
+          textAlign={"center"}
+        >
           food recipe
         </Typography>
       </Stack>
-      <Stack direction={"row"} alignItems={"center"} gap={7}>
+      <Stack direction={"row"} alignItems={"center"} gap={3}>
         <IconButton sx={{ color: "#FFFFFF" }}>
           <Search />
         </IconButton>

@@ -40,23 +40,48 @@ const StyledRating = styled(Rating)(({ theme }) => ({
 
 const customIcons = {
   1: {
-    icon: <SentimentVeryDissatisfied color="error" />,
+    icon: (
+      <SentimentVeryDissatisfied
+        color="error"
+        sx={{ fontSize: { xs: 20, sm: 20, md: 25, lg: 30, xl: 30 } }}
+      />
+    ),
     label: "Very Dissatisfied",
   },
   2: {
-    icon: <SentimentDissatisfied color="error" />,
+    icon: (
+      <SentimentDissatisfied
+        color="error"
+        sx={{ fontSize: { xs: 20, sm: 20, md: 25, lg: 30, xl: 30 } }}
+      />
+    ),
     label: "Dissatisfied",
   },
   3: {
-    icon: <SentimentSatisfied color="warning" />,
+    icon: (
+      <SentimentSatisfied
+        color="warning"
+        sx={{ fontSize: { xs: 20, sm: 20, md: 25, lg: 30, xl: 30 } }}
+      />
+    ),
     label: "Neutral",
   },
   4: {
-    icon: <SentimentSatisfiedAlt color="success" />,
+    icon: (
+      <SentimentSatisfiedAlt
+        color="success"
+        sx={{ fontSize: { xs: 20, sm: 20, md: 25, lg: 30, xl: 30 } }}
+      />
+    ),
     label: "Satisfied",
   },
   5: {
-    icon: <SentimentVerySatisfied color="success" />,
+    icon: (
+      <SentimentVerySatisfied
+        color="success"
+        sx={{ fontSize: { xs: 20, sm: 20, md: 25, lg: 30, xl: 30 } }}
+      />
+    ),
     label: "Very Satisfied",
   },
 };
@@ -130,20 +155,25 @@ const Favorites = () => {
 
   return (
     <Stack
-      direction={"row"}
+      direction={{ xs: "column", sm: "column", sm: "row" }}
       alignItems={"flex-start"}
       justifyContent={"space-between"}
       gap={2}
       sx={{ p: "0 3%", zIndex: 1 }}
     >
-      <Stack sx={{ width: "80%" }}>
+      <Stack sx={{ width: { xs: "100%", sm: "100%", md: "80%" } }}>
         <Stack
           direction={"row"}
           alignItems={"flex-start"}
           justifyContent={"space-between"}
           sx={{ p: 3 }}
         >
-          <Typography fontSize={50} fontWeight={500} color={"#666666"}>
+          <Typography
+            fontSize={50}
+            fontWeight={500}
+            color={"#666666"}
+            sx={{ display: { xs: "none", sm: "none", md: "block" } }}
+          >
             .01
           </Typography>
           <Stack alignItems={"center"} gap={2}>
@@ -153,13 +183,19 @@ const Favorites = () => {
                 direction={"row"}
                 sx={{
                   background: "#222222",
-                  p: 1,
+                  p: { xs: 0.5, sm: 1 },
                   color: "#FFFFFF",
                   borderRadius: 5,
                 }}
               >
-                <AccessTime />
-                <Typography>{selectedItem?.minutes} min</Typography>
+                <AccessTime
+                  sx={{ fontSize: { xs: 10, sm: 13, md: 16, lg: 24, xl: 24 } }}
+                />
+                <Typography
+                  fontSize={{ xs: 10, sm: 11, md: 12, lg: 15, xl: 16 }}
+                >
+                  {selectedItem?.minutes} min
+                </Typography>
               </Stack>
               <motion.div
                 animate={{ rotate: 360 }}
@@ -175,8 +211,8 @@ const Favorites = () => {
                   src={selectedItem?.image}
                   alt="food"
                   sx={{
-                    width: 280,
-                    height: 280,
+                    width: { xs: 150, sm: 200, md: 280 },
+                    height: { xs: 150, sm: 200, md: 280 },
                   }}
                 />
               </motion.div>
@@ -185,16 +221,25 @@ const Favorites = () => {
                 direction={"row"}
                 sx={{
                   background: "#222222",
-                  p: 1,
+                  p: { xs: 0.5, sm: 1 },
                   color: "#FFFFFF",
                   borderRadius: 5,
                 }}
               >
-                <Whatshot />
-                <Typography>{selectedItem?.cal} cal</Typography>
+                <Whatshot
+                  sx={{ fontSize: { xs: 10, sm: 13, md: 16, lg: 24, xl: 24 } }}
+                />
+                <Typography
+                  fontSize={{ xs: 10, sm: 11, md: 12, lg: 15, xl: 16 }}
+                >
+                  {selectedItem?.cal} cal
+                </Typography>
               </Stack>
             </Stack>
-            <Typography fontSize={28} fontWeight={500}>
+            <Typography
+              fontSize={{ xs: 16, sm: 20, md: 24, lg: 28, xl: 28 }}
+              fontWeight={500}
+            >
               {selectedItem?.name}
             </Typography>
             <Button
@@ -202,6 +247,7 @@ const Favorites = () => {
               sx={{
                 background: "#99CB00",
                 "&:hover": { background: "#99CB0090" },
+                fontSize: { xs: 10, sm: 11, md: 12, lg: 15, xl: 16 },
               }}
               onClick={handleOpen}
             >
@@ -213,20 +259,35 @@ const Favorites = () => {
               <Stack alignItems={"center"}>
                 <IconButton onClick={() => likeHandler(selectedItem?._id)}>
                   {likeBoolean ? (
-                    <Favorite sx={{ color: "#99CB00", fontSize: 30 }} />
+                    <Favorite
+                      sx={{
+                        color: "#99CB00",
+                        fontSize: { xs: 20, sm: 20, md: 25, lg: 30, xl: 30 },
+                      }}
+                    />
                   ) : (
-                    <FavoriteBorder sx={{ color: "#99CB00", fontSize: 30 }} />
+                    <FavoriteBorder
+                      sx={{
+                        color: "#99CB00",
+                        fontSize: { xs: 20, sm: 20, md: 25, lg: 30, xl: 30 },
+                      }}
+                    />
                   )}
                 </IconButton>
-                <Typography fontSize={11}>
+                <Typography fontSize={{ xs: 8, sm: 9, md: 10, lg: 11, xl: 11 }}>
                   {selectedItem?.likes?.length} Like
                 </Typography>
               </Stack>
               <Stack alignItems={"center"}>
                 <IconButton onClick={handleOpenModal}>
-                  <Comment sx={{ color: "#99CB00", fontSize: 30 }} />
+                  <Comment
+                    sx={{
+                      color: "#99CB00",
+                      fontSize: { xs: 20, sm: 20, md: 25, lg: 30, xl: 30 },
+                    }}
+                  />
                 </IconButton>
-                <Typography fontSize={11}>
+                <Typography fontSize={{ xs: 8, sm: 9, md: 10, lg: 11, xl: 11 }}>
                   {selectedItem?.comments?.length} Comment
                 </Typography>
                 <Modal open={isModalOpen} onClose={handleCloseModal}>
@@ -255,19 +316,19 @@ const Favorites = () => {
         </Stack>
       </Stack>
       <Stack
-        // flexGrow={0.25}
         sx={{
           background: "#222222",
-          width: "14%",
+          width: { xs: "100%", sm: "100%", sm: "14%" },
           p: 1,
           color: "#FFFFFF",
           borderRadius: 3,
-          height: "70dvh",
+          height: { xs: "100%", sm: "100%", sm: "70dvh" },
           overflowY: "scroll",
           "::-webkit-scrollbar": {
             display: "none",
           },
         }}
+        direction={{ xs: "row", sm: "row", sm: "column" }}
         gap={2}
       >
         {allRecipeFilter?.map((item, index) => (
