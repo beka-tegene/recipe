@@ -174,7 +174,7 @@ const Dashboard = () => {
 
   return (
     <Stack
-      direction={{ xs: "column", sm: "column", sm: "row" }}
+      direction={{ xs: "column", sm: "column", md: "row" }}
       alignItems={"flex-start"}
       justifyContent={"space-between"}
       gap={2}
@@ -394,17 +394,17 @@ const Dashboard = () => {
       <Stack
         sx={{
           background: "#222222",
-          width: { xs: "100%", sm: "100%", sm: "14%" },
+          width: { xs: "100%", sm: "100%", md: "14%" },
           p: 1,
           color: "#FFFFFF",
           borderRadius: 3,
-          height: { xs: "100%", sm: "100%", sm: "70dvh" },
+          height: { xs: "100%", sm: "100%", md: "70dvh" },
           overflowY: "scroll",
           "::-webkit-scrollbar": {
             display: "none",
           },
         }}
-        direction={{ xs: "row", sm: "row", sm: "column" }}
+        direction={{ xs: "row", sm: "row", md: "column" }}
         gap={2}
       >
         {filterArray?.map((item, index) => (
@@ -425,8 +425,8 @@ const Dashboard = () => {
               src={item.image}
               alt="food"
               sx={{
-                width: 100,
-                height: 100,
+                width: { xs: 50, sm: 80, md: 100 },
+                    height: { xs: 50, sm: 80, md: 100 },
               }}
             />
             <Typography fontSize={15}>{item.name}</Typography>
