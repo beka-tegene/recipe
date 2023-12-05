@@ -34,7 +34,7 @@ export const getRecipeById = async (data) => {
   );
 
   if (response.status === 200) {
-    window.location.reload(true);
+    return response.data;
   } else {
     throw new Error("Failed to fetch recipes by id");
   }
@@ -48,7 +48,7 @@ export const updateRecipeById = async (data) => {
   );
 
   if (response.status === 200) {
-    return response.data;
+    window.location.reload(true);
   } else {
     throw new Error("Failed to fetch recipes by id");
   }
