@@ -34,16 +34,17 @@ export const getRecipeById = async (data) => {
   );
 
   if (response.status === 200) {
-    return response.data;
+    window.location.reload(true);
   } else {
     throw new Error("Failed to fetch recipes by id");
   }
 };
 
 export const updateRecipeById = async (data) => {
-  //
+  const productId = data.productId;
   const response = await axios.patch(
-    `http://localhost:5000/api/v1/recipe/${data}`
+    `http://localhost:5000/api/v1/recipe/${productId}`,
+    data
   );
 
   if (response.status === 200) {
