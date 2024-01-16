@@ -2,7 +2,7 @@ import axios from "axios";
 
 export const createReview = async (data) => {
   const useData = await axios.post(
-    "http://localhost:5000/api/v1/review",
+    "https://recipe-2xma.onrender.com/api/v1/review",
     data,
     {
       headers: {
@@ -17,7 +17,7 @@ export const createReview = async (data) => {
 
 export const getAllReviews = async (data) => {
   const useData = await axios.get(
-    "http://localhost:5000/api/v1/review",
+    "https://recipe-2xma.onrender.com/api/v1/review",
     data,
     {
       headers: {
@@ -35,7 +35,7 @@ export const getAllReviews = async (data) => {
 export const getSingleReview = async (data) => {
   //
   const response = await axios.get(
-    `http://localhost:5000/api/v1/review/${data}`
+    `https://recipe-2xma.onrender.com/api/v1/review/${data}`
   );
 
   if (response.status === 200) {
@@ -48,7 +48,7 @@ export const getSingleReview = async (data) => {
 export const updateReview = async (data) => {
   //
   const response = await axios.patch(
-    `http://localhost:5000/api/v1/review/${data}`
+    `https://recipe-2xma.onrender.com/api/v1/review/${data}`
   );
 
   if (response.status === 200) {
@@ -61,7 +61,7 @@ export const updateReview = async (data) => {
 export const deleteReview = async (data) => {
   //
   const response = await axios.delete(
-    `http://localhost:5000/api/v1/review/${data}`
+    `https://recipe-2xma.onrender.com/api/v1/review/${data}`
   );
 
   if (response.status === 200) {

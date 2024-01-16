@@ -3,7 +3,7 @@ import { toast } from "react-toastify";
 import Cookies from "js-cookie";
 export const SignUp = async (data) => {
   const useData = await axios.post(
-    "http://localhost:5000/api/v1/auth/register",
+    "https://recipe-2xma.onrender.com/api/v1/auth/register",
     data,
     {
       headers: {
@@ -24,7 +24,7 @@ export const Login = async (data) => {
     console.log(data);
     //email, password
     const response = await axios.post(
-      "http://localhost:5000/api/v1/auth/login",
+      "https://recipe-2xma.onrender.com/api/v1/auth/login",
       data,
       {
         headers: {
@@ -53,7 +53,7 @@ export const Login = async (data) => {
 export const ForgotPassword = async (data) => {
   console.log(data);
   const useData = await axios.post(
-    "http://localhost:5000/api/v1/auth/forgot-password",
+    "https://recipe-2xma.onrender.com/api/v1/auth/forgot-password",
     data,
     {
       headers: {
@@ -70,7 +70,7 @@ export const ForgotPassword = async (data) => {
 
 export const RestPassword = async (data) => {
   const useData = await axios.post(
-    "http://localhost:5000/api/v1/auth/register",
+    "https://recipe-2xma.onrender.com/api/v1/auth/register",
     data,
     {
       headers: {

@@ -3,7 +3,7 @@ import axios from "axios";
 export const CreateRecipe = async (data) => {
   console.log(data);
   const useData = await axios.post(
-    "http://localhost:5000/api/v1/recipe/",
+    "https://recipe-2xma.onrender.com/api/v1/recipe/",
     data,
     {
       headers: {
@@ -18,7 +18,7 @@ export const CreateRecipe = async (data) => {
 };
 
 export const getAllRecipes = async (data) => {
-  const response = await axios.get(`http://localhost:5000/api/v1/recipe`);
+  const response = await axios.get(`https://recipe-2xma.onrender.com/api/v1/recipe`);
 
   if (response.status === 200) {
     return response.data;
@@ -30,7 +30,7 @@ export const getAllRecipes = async (data) => {
 export const getRecipeById = async (data) => {
   //
   const response = await axios.get(
-    `http://localhost:5000/api/v1/recipe/${data}`
+    `https://recipe-2xma.onrender.com/api/v1/recipe/${data}`
   );
 
   if (response.status === 200) {
@@ -43,7 +43,7 @@ export const getRecipeById = async (data) => {
 export const updateRecipeById = async (data) => {
   const productId = data.productId;
   const response = await axios.patch(
-    `http://localhost:5000/api/v1/recipe/${productId}`,
+    `https://recipe-2xma.onrender.com/api/v1/recipe/${productId}`,
     data
   );
 
@@ -57,7 +57,7 @@ export const updateRecipeById = async (data) => {
 export const deleteRecipeById = async (data) => {
   const productId = data.productId;
   const response = await axios.delete(
-    `http://localhost:5000/api/v1/recipe/${productId}`
+    `https://recipe-2xma.onrender.com/api/v1/recipe/${productId}`
   );
   console.log(response);
   if (response.status === 200) {
@@ -70,7 +70,7 @@ export const deleteRecipeById = async (data) => {
 export const likeProduct = async (data) => {
   console.log(data);
   const useData = await axios.post(
-    `http://localhost:5000/api/v1/recipe/like`,
+    `https://recipe-2xma.onrender.com/api/v1/recipe/like`,
     data,
     {
       headers: {

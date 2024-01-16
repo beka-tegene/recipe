@@ -13,7 +13,7 @@ const Store = configureStore({
   },
   middleware: [sagaMiddleware],
 });
-
+  
 sagaMiddleware.run(watchRecipe);
 
 export default Store;
